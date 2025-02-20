@@ -16,3 +16,4 @@ torchmetrics
 torch-fidelity
 reedsolo
 numpy==1.26.4
+huggingface-hub==0.25.0
