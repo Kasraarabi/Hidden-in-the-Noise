@@ -310,11 +310,6 @@ def main(args):
     table.add_data("Noise Detection", *row[1:])
     wandb.log({"results_table": table})
 
-    if args.save_generated_imgs:
-        wandb.log({"watermarked_image": wandb.Image(Fourier_watermark_image, caption=f"Key_{key_index}.Prompt_{prompt_index}.Fourier_watermark")})
-        wandb.log({"no_watermark_image": wandb.Image(no_watermark_image, caption=f"Key_{key_index}.Prompt_{prompt_index}.No_watermark")})
-
-
     df_exp = pd.DataFrame([row[1:]], columns=head)
 
     quality_scores = quality_metrics.return_average()
