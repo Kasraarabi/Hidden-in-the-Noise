@@ -227,8 +227,8 @@ def main(args):
         quality_metrics.collect('CLIP Fourier Watermark', Fourier_watermark_clip.item())
 
         if args.save_generated_imgs:
-            Fourier_watermark_image.save(os.path.join(save_img_dir, f'Key_{key_index}.Prompt_{prompt_index}.Fourier_watermark.ClipSim_{Fourier_watermark_clip.item():.4f}.jpg'))
-            no_watermark_image.save(os.path.join(save_nowatermark_img_dir, f'Key_{key_index}.Prompt_{prompt_index}.No_watermark.ClipSim_{no_watermark_clip.item():.4f}.jpg'))
+            Fourier_watermark_image.save(os.path.join(save_img_dir, f'Prompt_{prompt_index}.Fourier_watermark.ClipSim_{Fourier_watermark_clip.item():.4f}.jpg'))
+            no_watermark_image.save(os.path.join(save_nowatermark_img_dir, f'Prompt_{prompt_index}.No_watermark.ClipSim_{no_watermark_clip.item():.4f}.jpg'))
         
 
         distorted_image_list = [
