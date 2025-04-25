@@ -50,7 +50,7 @@ def parse_args():
     parser.add_argument('--save_root_dir', type=str, default='./inpaint_runs')
     
     parser.add_argument('--gpu_id', default=0, type=int)
-    parser.add_argument('--trials', type=int, default=1000, help='total number of trials to run')
+    parser.add_argument('--trials', type=int, default=5, help='total number of trials to run')
     parser.add_argument('--fix_gt', type=int, default=1)
     parser.add_argument('--time_shift', type=int, default=1)
     parser.add_argument('--time_shift_factor', type=float, default=1.0)
@@ -93,7 +93,6 @@ class InpaintWatermarker:
         self.watermark_region_mask = watermark_region_mask
         self.watermarked_latents = {}
         self.salt = "ekofijorfgjirejoiconime"
-        # self.text_embeddings = pipe.get_text_embedding('')
         
         self.mask = self._create_inpaint_mask()
         self.latent_mask = self._create_latent_mask(pipe)
@@ -144,12 +143,23 @@ class InpaintWatermarker:
         
         image = image.to(device=pipe.device)
         mask = torch.from_numpy(self.mask).to(device=pipe.device)
-        
+        # convert tensors to PIL images for correct inpaint inputs
+        from torchvision.transforms.functional import to_pil_image
+        # prepare inpainting image input
+        if isinstance(image, torch.Tensor):
+            image_input = to_pil_image(image.cpu())
+        else:
+            image_input = image
+        # prepare inpainting mask input (single-channel)
+        # mask is float tensor with values 0 or 1; scale to uint8 0-255
+        mask_uint8 = (mask * 255).cpu().to(torch.uint8)
+        mask_input = to_pil_image(mask_uint8)
+
         with torch.no_grad():
             watermarked_image = pipe(
                 prompt="",
-                image=image,
-                mask_image=mask,
+                image=image_input,
+                mask_image=mask_input,
                 latents=encoded_noise,
                 num_inference_steps=self.args.num_inference_steps,
                 guidance_scale=self.args.guidance_scale
@@ -423,15 +433,12 @@ def main(args):
                 batch_captions = []
 
         fid_score = fid.compute().item()
-        print(f"FID score for mask size {mask_size}: {fid_score}")
-        wandb.log({f"fid_score_{mask_size}": fid_score})
 
         fid.reset()
 
     # Sort highest_fid_images by inception score (higher is worse) and keep top 50
     highest_fid_images = sorted(highest_fid_images, key=lambda x: x['inception_score'], reverse=True)[:50]
 
-    # Log the top 50 highest FID images
     for i, img_data in enumerate(highest_fid_images):
         wandb.log({
             f"top_{i+1}_fid_pair": [
