@@ -33,6 +33,16 @@ python WIND_full.py --online
 python WIND_fast.py --online
 ```
 
+#### WIND Inpainting
+
+First, download the COCO examples metadata (5000 examples) from Google Drive:
+https://drive.google.com/drive/folders/1saWx-B3vJxzspJ-LaXSEn5Qjm8NIs3r0
+
+Then run the inpainting watermarking script:
+```bash
+python inpainting.py --online
+```
+
 #### Other Experiments
 
 Please check the `initial_noise` branch for the code related to other experiments discussed in the paper.
