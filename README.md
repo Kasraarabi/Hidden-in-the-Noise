@@ -21,7 +21,7 @@ chmod +x setup.sh
 
 ### Usage
 
-#### WIND Full
+#### WIND Full (Recommended)
 
 ```python
 python WIND_full.py --online
