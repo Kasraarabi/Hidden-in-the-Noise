@@ -33,7 +33,7 @@ python WIND_full.py --online
 python WIND_fast.py --online
 ```
 
-#### WIND Inpainting
+#### WIND Inpainting (Post-Hoc)
 
 First, download the COCO examples metadata (5000 examples) from Google Drive:
 https://drive.google.com/drive/folders/1saWx-B3vJxzspJ-LaXSEn5Qjm8NIs3r0
